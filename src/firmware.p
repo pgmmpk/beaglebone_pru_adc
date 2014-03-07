@@ -66,10 +66,16 @@ START:
 	MOV adc_, ADC_BASE
 	MOV fifo0data, ADC_FIFO0DATA
 	MOV locals, 0
+
+	MOV tmp0, 0xffffffff
+	SBBO tmp0, locals, 0, 4
+	JMP QUIT
 	
 	LBBO tmp0, locals, 0, 4				// check eyecatcher
 	MOV tmp1, 0xbeef1965				//
 	QBNE QUIT, tmp0, tmp1				// bail out if does not match
+
+
 
 	MOV out_buff, 0x80001000
 	LBBO ema, locals, 0x1c, 4
@@ -99,6 +105,10 @@ FILL_STEPS:
 	LBBO tmp0, adc_, CONTROL, 4
 	OR   tmp0, tmp0, 0x7
 	SBBO tmp0, adc_, CONTROL, 4
+	
+	MOV tmp0, 0xffffffff
+	SBBO tmp0, locals, 0, 4
+	JMP QUIT
 
 CAPTURE:
 	

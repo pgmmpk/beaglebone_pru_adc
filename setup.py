@@ -1,3 +1,6 @@
+import distribute_setup
+distribute_setup.use_setuptools()
+
 from setuptools import setup, Extension, find_packages
 
 classifiers = ['Development Status :: 3 - Alpha',

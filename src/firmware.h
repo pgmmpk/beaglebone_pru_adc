@@ -14,6 +14,7 @@ typedef struct {
 	word speed;					// width of last encoder tick in "timer" units, aka inversed speed
 #define INITIAL_ACC_VAL (0x7fffffff)
 	word acc;					// work area for sped computation
+	word reserved;
 } enc_local_t;
 
 /*

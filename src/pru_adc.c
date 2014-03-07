@@ -16,10 +16,10 @@ typedef struct {
     PyObject_HEAD
     
     locals_t locals;
-
+    
 	int started;
 	int closed;
-
+    
 } Capture;
 
 static void Capture_dealloc(Capture	 *self) {
@@ -29,36 +29,36 @@ static void Capture_dealloc(Capture	 *self) {
 		prussdrv_pru_disable(0); 		// Disable the PRU
 		prussdrv_exit();
 	}
-
+    
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static int Capture_init(Capture *self, PyObject *args, PyObject *kwds) {
-    tpruss_intc_initdata pruss_intc_initdata = PRUSS_INTC_INITDATA;	
+    tpruss_intc_initdata pruss_intc_initdata = PRUSS_INTC_INITDATA;
 	int rc;
-
+    
     self->closed = 1; // consider closed unless successfully init everything
-
-    rc = prussdrv_init ();	    
+    
+    rc = prussdrv_init ();
     if (rc != 0) {
         PyErr_SetString(PyExc_IOError, "Failed to init PRUSSDRV driver");
 		return -1;
     }
-
+    
     rc = prussdrv_open(0);
     if (rc != 0) {
         PyErr_SetString(PyExc_IOError, "Failed to open PRU 0");
 		prussdrv_exit();
         return -1;
     }
-
+    
     rc = prussdrv_pru_reset(0);
     if (rc != 0) {
         PyErr_SetString(PyExc_IOError, "Failed to reset PRU 0");
 		prussdrv_exit();
         return -1;
     }
-
+    
     prussdrv_pruintc_init(&pruss_intc_initdata);		// Get the interrupt initialized
 	
     rc = prussdrv_pru_enable(0);
@@ -67,7 +67,7 @@ static int Capture_init(Capture *self, PyObject *args, PyObject *kwds) {
 		prussdrv_exit();
         return -1;
     }
-
+    
 	memset(&self->locals, 0, sizeof(self->locals));
 	self->locals.eyecatcher = EYECATCHER;
 	self->locals.enc.encoder0 = 0xff; // assigning out-of-range pin number disables encoder logic
@@ -75,19 +75,19 @@ static int Capture_init(Capture *self, PyObject *args, PyObject *kwds) {
 	
 	self->locals.enc_local[0].threshold = 2000;
 	self->locals.enc_local[0].acc = INITIAL_ACC_VAL;
-
+    
 	self->locals.enc_local[1].threshold = 2000;
 	self->locals.enc_local[1].acc = INITIAL_ACC_VAL;
-
+    
     self->closed = 0;
-
+    
     return 0;
 }
 
 static PyObject *Capture_start(Capture *self, PyObject *args, PyObject *kwds) {
 	int rc;
 	char *filename = NULL;
-
+    
     if (!PyArg_ParseTuple(args, "s", &filename)) {		// Parse the PRU number
 		return NULL;
     }
@@ -96,28 +96,30 @@ static PyObject *Capture_start(Capture *self, PyObject *args, PyObject *kwds) {
         PyErr_SetString(PyExc_IOError, "Already started");
         return NULL;
     }
-
+    
 	prussdrv_pru_write_memory(0, 0, (unsigned int *) &self->locals, sizeof(self->locals));
-
+    
     rc = prussdrv_exec_program (0, filename);						// Load and execute the program
     if (rc != 0) {
         PyErr_SetString(PyExc_IOError, "Failed to exec firmware");
         return NULL;
-    } 
-
+    }
+    
+    self->started = 1; // true
+    
     Py_RETURN_NONE;
 }
 
 static PyObject *Capture_wait(Capture *self) {
-
+    
     if (!self->started) {
         PyErr_SetString(PyExc_IOError, "Not started");
         return NULL;
     }
-
-	prussdrv_pru_wait_event(0);		// Wait for the event. This blocks the thread. 
-	prussdrv_pru_clear_event(0, 0);	// Clear the event. FIXME: parameter meaning??? 
-
+    
+	prussdrv_pru_wait_event(0);		// Wait for the event. This blocks the thread.
+	prussdrv_pru_clear_event(0, 0);	// Clear the event. FIXME: parameter meaning???
+    
     Py_RETURN_NONE;
 }
 
@@ -126,7 +128,7 @@ static PyObject *Capture_stop(Capture *self, PyObject *args, PyObject *kwds) {
 	word flags = 1;
 	
 	prussdrv_pru_write_memory(0, offsetof(locals_t, flags), &flags, sizeof(flags));
-
+    
     Py_RETURN_NONE;
 }
 
@@ -137,7 +139,7 @@ static PyObject *Capture_close(Capture *self, PyObject *args, PyObject *kwds) {
 		prussdrv_pru_disable(0); 		// Disable the PRU
 		prussdrv_exit();
 	}
-
+    
     Py_RETURN_NONE;
 }
 
@@ -194,20 +196,20 @@ static PyTypeObject CaptureType = {
 static PyMethodDef module_methods[] = {
     { NULL, NULL, 0, NULL }
 };
- 
+
 PyMODINIT_FUNC init_pru_adc() {
     PyObject *module = NULL;
-
-
+    
+    
     CaptureType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&CaptureType) < 0)
-        return;
-
+    return;
+    
     module = Py_InitModule3("_pru_adc", module_methods, "");
     if (module == NULL) {
         return;
     }
-
+    
     Py_INCREF(&CaptureType);
     PyModule_AddObject(module, "Capture", (PyObject *) &CaptureType);
 }
