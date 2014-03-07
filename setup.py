@@ -26,7 +26,7 @@ setup(name             = 'Beaglebone PRU ADC',
       ext_modules      = [
           Extension('beaglebone_pru_adc._pru_adc', 
               ['src/pru_adc.c', 'prussdrv/prussdrv.c'],
-              include_dirs = ['prussdrv']
+              include_dirs = ['prussdrv', 'src']
           )
       ] 
 )
