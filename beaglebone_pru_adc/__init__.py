@@ -139,7 +139,7 @@ class Capture(_pru_adc.Capture):
     
 	@property
 	def encoder0_values(self):
-		return struct.unpack("LxxxxxxxxLL", self._mem[0x0048:0x0048+5*4])
+		return struct.unpack("LLLLL", self._mem[0x0048:0x0048+5*4])
 	
 	@property
 	def encoder1_values(self):
