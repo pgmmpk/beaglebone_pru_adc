@@ -59,12 +59,14 @@ static int Capture_init(Capture *self, PyObject *args, PyObject *kwds) {
 		return -1;
     }
 	
+    /*
     rc = prussdrv_pru_disable(0);
     if (rc != 0) {
         PyErr_SetString(PyExc_IOError, "Failed to disable PRU 0");
 		prussdrv_exit();
         return -1;
     }
+    */
     
 	memset(&self->locals, 0, sizeof(self->locals));
 	self->locals.eyecatcher = EYECATCHER;
@@ -84,12 +86,14 @@ static int Capture_init(Capture *self, PyObject *args, PyObject *kwds) {
         return -1;
     }
 
+    /*
     rc = prussdrv_pru_enable(0);
     if (rc != 0) {
         PyErr_SetString(PyExc_IOError, "Failed to enable PRU 0");
 		prussdrv_exit();
         return -1;
     }
+    */
     
     self->closed = 0;
     

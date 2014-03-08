@@ -4,6 +4,7 @@ import re
 import os
 import mmap
 import struct
+import time
 
 SLOTS = glob.glob('/sys/devices/bone_capemgr.*/slots')[0]
 
@@ -29,6 +30,7 @@ def _ensure_pru_loaded():
     
 	with open(SLOTS, 'w') as f:
 		f.write('BB-BONE-PRU-01')
+	time.sleep(0.2)
 
 def _ensure_adc_loaded():
 	if _is_adc_loaded():
@@ -36,6 +38,7 @@ def _ensure_adc_loaded():
     
 	with open(SLOTS, 'w') as f:
 		f.write('BB-ADC')
+	time.sleep(0.2)
 
 _ensure_pru_loaded()
 _ensure_adc_loaded()
