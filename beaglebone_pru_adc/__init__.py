@@ -143,7 +143,7 @@ class Capture(_pru_adc.Capture):
 	
 	@property
 	def encoder1_values(self):
-		return struct.unpack("LxxxxxxxxLL", self._mem[0x0068:0x0068+5*4])
+		return struct.unpack("LLLLL", self._mem[0x0068:0x0068+5*4])
     
 	def _set_word(self, byte_offset, value):
 		struct.pack_into('L', self._mem, byte_offset, value)
