@@ -43,6 +43,7 @@ _ensure_adc_loaded()
 class Capture(_pru_adc.Capture):
     
 	def __init__(self):
+		self._mem = None
 		_pru_adc.Capture.__init__(self)
 		
 		with open('/sys/class/uio/uio0/maps/map0/addr') as f:

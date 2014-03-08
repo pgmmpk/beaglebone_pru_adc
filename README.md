@@ -37,6 +37,11 @@ Assume Angstrom distribution.
 
 	{% highlight bash %}
 	opkg update && opkg install python-pip python-setuptools python-smbus
+	
+	git config --global http.sslVerify false
+	
+	git clone https://github.com/pgmmpk/beaglebone_pru_adc.git
+	
 	python setup.py install
 	{% endhighlight %}
 
