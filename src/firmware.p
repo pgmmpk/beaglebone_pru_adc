@@ -5,64 +5,64 @@
 // Local storage. Starts at offset 0 of the internal PRU memory bank. Initial values are set by the host
 // program. Contains the following blocks:
 // 
-// Offset       Length  Value         Name       Description
-// ------       ------  -----         ----       -----------
-// 0x0000            4  0xbeef1965    EYE        Eyecatcher constant 0xbeef1965
-// 0x0004            4  0x00000000    TICKS      Number of capture ticks. Incremented each time ADC capture runs (200K times per sec, approx)
-// 0x0008            4  0x00000000    FLAGS      Execution flags (bit mapped)
-// 0x000c            4  0x00000000    SCOPE_OUT  Address of the DDR memory buffer where to store OSCILLOSCOPE captured values
-// 0x0010            4  0x00000000    SCHOPE_OFF Offset to use for OSCILLOSCOPE capture
-// 0x0014            4  0x00000000    SCOPE_LEN  How many values to capture in OSCILLOSCOPE mode
-// 0x0018            4  0x00000000               Reserved
-// 0x001c            3  0x000000                 Reserved
-// 0x001f            1  0x01          EMA_POW    Exponent to use for EMA-averaging: ema_value += (value - ema_value / 2^EMA_POW)
-// 0x0020            4  0x00000000    AIN0_EMA   Value (optionally smoothened via EMA) of the channel AIN0
-// 0x0024            4  0x00000000    AIN1_EMA   Value (optionally smoothened via EMA) of the channel AIN1
-// 0x0028            4  0x00000000    AIN2_EMA   Value (optionally smoothened via EMA) of the channel AIN2
-// 0x002c            4  0x00000000    AIN3_EMA   Value (optionally smoothened via EMA) of the channel AIN3
-// 0x0030            4  0x00000000    AIN4_EMA   Value (optionally smoothened via EMA) of the channel AIN4
-// 0x0034            4  0x00000000    AIN5_EMA   Value (optionally smoothened via EMA) of the channel AIN5
-// 0x0038            4  0x00000000    AIN6_EMA   Value (optionally smoothened via EMA) of the channel AIN6
-// 0x003c            4  0x00000000    AIN7_EMA   Value (optionally smoothened via EMA) of the channel AIN7
+// Offset   Length  Value Name   Description
+// ------   ------  ----- ----   -----------
+// 0x00004  0xbeef1965EYEEyecatcher constant 0xbeef1965
+// 0x00044  0x00000000TICKS  Number of capture ticks. Incremented each time ADC capture runs (200K times per sec, approx)
+// 0x00084  0x00000000FLAGS  Execution flags (bit mapped)
+// 0x000c4  0x00000000SCOPE_OUT  Address of the DDR memory buffer where to store OSCILLOSCOPE captured values
+// 0x00104  0x00000000SCHOPE_OFF Offset to use for OSCILLOSCOPE capture
+// 0x00144  0x00000000SCOPE_LEN  How many values to capture in OSCILLOSCOPE mode
+// 0x00184  0x00000000   Reserved
+// 0x001c3  0x000000 Reserved
+// 0x001f1  0x01  EMA_POWExponent to use for EMA-averaging: ema_value += (value - ema_value / 2^EMA_POW)
+// 0x00204  0x00000000AIN0_EMA   Value (optionally smoothened via EMA) of the channel AIN0
+// 0x00244  0x00000000AIN1_EMA   Value (optionally smoothened via EMA) of the channel AIN1
+// 0x00284  0x00000000AIN2_EMA   Value (optionally smoothened via EMA) of the channel AIN2
+// 0x002c4  0x00000000AIN3_EMA   Value (optionally smoothened via EMA) of the channel AIN3
+// 0x00304  0x00000000AIN4_EMA   Value (optionally smoothened via EMA) of the channel AIN4
+// 0x00344  0x00000000AIN5_EMA   Value (optionally smoothened via EMA) of the channel AIN5
+// 0x00384  0x00000000AIN6_EMA   Value (optionally smoothened via EMA) of the channel AIN6
+// 0x003c4  0x00000000AIN7_EMA   Value (optionally smoothened via EMA) of the channel AIN7
 
 #define PRU0_ARM_INTERRUPT 19
 
-#define ADC_BASE            0x44e0d000
+#define ADC_BASE0x44e0d000
 
-#define CONTROL         0x0040
-#define SPEED           0x004c
-#define STEP1           0x0064
-#define DELAY1          0x0068
-#define STATUS          0x0044
-#define STEPCONFIG      0x0054
-#define FIFO0COUNT      0x00e4
+#define CONTROL 0x0040
+#define SPEED   0x004c
+#define STEP1   0x0064
+#define DELAY1  0x0068
+#define STATUS  0x0044
+#define STEPCONFIG  0x0054
+#define FIFO0COUNT  0x00e4
 
-#define ADC_FIFO0DATA       (ADC_BASE + 0x0100)
+#define ADC_FIFO0DATA   (ADC_BASE + 0x0100)
 
 // Register allocations
-#define adc_      r6
+#define adc_  r6
 #define fifo0data r7
 #define out_buff  r8
-#define locals    r9
+#define localsr9
 
-#define value     r10
+#define value r10
 #define channel   r11
-#define ema       r12
+#define ema   r12
 #define encoders  r13
 
-#define tmp0      r1
-#define tmp1      r2
-#define tmp2      r3
-#define tmp3      r4
-#define tmp4      r5
+#define tmp0  r1
+#define tmp1  r2
+#define tmp2  r3
+#define tmp3  r4
+#define tmp4  r5
 
 .origin 0
 .entrypoint START
 
 START:
-    LBCO r0, C4, 4, 4					// Load Bytes Constant Offset (?)
-    CLR  r0, r0, 4						// Clear bit 4 in reg 0
-    SBCO r0, C4, 4, 4					// Store Bytes Constant Offset
+LBCO r0, C4, 4, 4					// Load Bytes Constant Offset (?)
+CLR  r0, r0, 4						// Clear bit 4 in reg 0
+SBCO r0, C4, 4, 4					// Store Bytes Constant Offset
 
 	MOV adc_, ADC_BASE
 	MOV fifo0data, ADC_FIFO0DATA
@@ -88,17 +88,17 @@ START:
 	SBBO tmp0, adc_, SPEED, 4
 	
 	// Configure STEPCONFIG registers for all 8 channels
-    MOV tmp0, STEP1
+MOV tmp0, STEP1
 	MOV tmp1, 0
 	MOV tmp2, 0
 FILL_STEPS:
-    LSL tmp3, tmp1, 19
-    SBBO tmp3, adc_, tmp0, 4
-    ADD tmp0, tmp0, 4
-    SBBO tmp2, adc_, tmp0, 4
-    ADD tmp1, tmp1, 1
-    ADD tmp0, tmp0, 4
-    QBNE FILL_STEPS, tmp1, 8
+LSL tmp3, tmp1, 19
+SBBO tmp3, adc_, tmp0, 4
+ADD tmp0, tmp0, 4
+SBBO tmp2, adc_, tmp0, 4
+ADD tmp1, tmp1, 1
+ADD tmp0, tmp0, 4
+QBNE FILL_STEPS, tmp1, 8
 
 	// Enable ADC with the desired mode (make STEPCONFIG registers writable, use tags, enable)
 	LBBO tmp0, adc_, CONTROL, 4
@@ -127,7 +127,7 @@ CAPTURE:
 
 NO_SCOPE:
 
-    // increment ticks
+// increment ticks
 	LBBO tmp0, locals, 0x04, 4
 	ADD  tmp0, tmp0, 1
 	SBBO tmp0, locals, 0x04, 4
@@ -142,21 +142,21 @@ NO_SCOPE:
 	SBBO tmp0, locals, 0x7c, 4
 
 WAIT_FOR_FIFO0:
-    LBBO tmp0, adc_, FIFO0COUNT, 4
-    QBNE WAIT_FOR_FIFO0, tmp0, 8
+LBBO tmp0, adc_, FIFO0COUNT, 4
+QBNE WAIT_FOR_FIFO0, tmp0, 8
 
-READ_ALL_FIFO0:                  // lets read all fifo content and dispatch depending on pin type
-    LBBO value, fifo0data, 0, 4
-    LSR  channel, value, 16
-    AND channel, channel, 0xf
-    MOV tmp1, 0xfff
-    AND value, value, tmp1
+READ_ALL_FIFO0:  // lets read all fifo content and dispatch depending on pin type
+LBBO value, fifo0data, 0, 4
+LSR  channel, value, 16
+AND channel, channel, 0xf
+MOV tmp1, 0xfff
+AND value, value, tmp1
 
-    // here we have true captured value and channel
-    QBNE NOT_ENC0, encoders.b0, channel
-    MOV channel, 0
-    CALL PROCESS
-    JMP NEXT_CHANNEL
+// here we have true captured value and channel
+QBNE NOT_ENC0, encoders.b0, channel
+MOV channel, 0
+CALL PROCESS
+JMP NEXT_CHANNEL
 NOT_ENC0:
 	QBNE NOT_ENC1, encoders.b1, channel
 	MOV channel, 1
@@ -164,8 +164,8 @@ NOT_ENC0:
 	JMP NEXT_CHANNEL
 NOT_ENC1:
 
-	LSL tmp1, channel, 2       // to byte offset
-	ADD tmp1, tmp1, 0x20       // base of the EMA values
+	LSL tmp1, channel, 2   // to byte offset
+	ADD tmp1, tmp1, 0x20   // base of the EMA values
 	LBBO tmp2, locals, tmp1, 4
 	LSR tmp3, tmp2, ema
 	SUB tmp3, value, tmp3
@@ -173,16 +173,16 @@ NOT_ENC1:
 	SBBO tmp2, locals, tmp1, 4
 
 NEXT_CHANNEL:
-    SUB tmp0, tmp0, 1
-    QBNE READ_ALL_FIFO0, tmp0, 0
-    
-    JMP CAPTURE
+SUB tmp0, tmp0, 1
+QBNE READ_ALL_FIFO0, tmp0, 0
+
+JMP CAPTURE
 
 QUIT:
-    MOV R31.b0, PRU0_ARM_INTERRUPT+16   // Send notification to Host for program completion
+MOV R31.b0, PRU0_ARM_INTERRUPT+16   // Send notification to Host for program completion
 HALT
 
-PROCESS:                        // lets process captured data. Type of processing depends on the pin type: average or wheel encoder
+PROCESS:// lets process captured data. Type of processing depends on the pin type: average or wheel encoder
 	LSL channel, channel, 5
 	ADD channel, channel, 0x44
 	LBBO &tmp1, locals, channel, 16 // load tmp1-tmp4 (threshold, raw, min, max)
@@ -190,9 +190,9 @@ PROCESS:                        // lets process captured data. Type of processin
 	MIN tmp3, tmp3, value
 	MAX tmp4, tmp4, value
 	SBBO &tmp1, locals, channel, 16 // store min/max etc
-	ADD tmp2, tmp3, tmp1            // tmp2 = min + threshold
+	ADD tmp2, tmp3, tmp1// tmp2 = min + threshold
 	QBLT TOHIGH, value, tmp2
-	ADD tmp2, value, tmp1           // tmp2 = value + threshold
+	ADD tmp2, value, tmp1   // tmp2 = value + threshold
 	QBLT TOLOW, tmp4, tmp2
 
 	RET
