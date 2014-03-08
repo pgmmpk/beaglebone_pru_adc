@@ -7,7 +7,7 @@ numsamples = 64000
 
 capture = adc.Capture()
 
-capture.oscilloscope_capture_init(4, numsamples)
+capture.oscilloscope_capture_init(capture.OFF_VALUES, numsamples)
 
 capture.start()
 
