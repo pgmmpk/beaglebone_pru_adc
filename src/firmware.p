@@ -25,14 +25,12 @@
 // 0x0038            4  0x00000000    AIN6_EMA   Value (optionally smoothened via EMA) of the channel AIN6
 // 0x003c            4  0x00000000    AIN7_EMA   Value (optionally smoothened via EMA) of the channel AIN7
 
-.origin 0
-.entrypoint START
-
 #define PRU0_ARM_INTERRUPT 19
 
 #define ADC_BASE            0x44e0d000
 
 #define CONTROL         0x0040
+#define SPEED           0x004c
 #define STEP1           0x0064
 #define DELAY1          0x0068
 #define STATUS          0x0044
@@ -58,6 +56,9 @@
 #define tmp3      r4
 #define tmp4      r5
 
+.origin 0
+.entrypoint START
+
 START:
     LBCO r0, C4, 4, 4					// Load Bytes Constant Offset (?)
     CLR  r0, r0, 4						// Clear bit 4 in reg 0
@@ -67,15 +68,9 @@ START:
 	MOV fifo0data, ADC_FIFO0DATA
 	MOV locals, 0
 
-	MOV tmp0, 0xffffffff
-	SBBO tmp0, locals, 0, 4
-	JMP QUIT
-	
 	LBBO tmp0, locals, 0, 4				// check eyecatcher
 	MOV tmp1, 0xbeef1965				//
 	QBNE QUIT, tmp0, tmp1				// bail out if does not match
-
-
 
 	MOV out_buff, 0x80001000
 	LBBO ema, locals, 0x1c, 4
@@ -87,6 +82,10 @@ START:
 	NOT  tmp1, tmp1
 	AND  tmp0, tmp0, tmp1
 	SBBO tmp0, adc_, CONTROL, 4
+	
+	// Put ADC capture to its full speed
+	MOV tmp0, 0
+	SBBO tmp0, adc_, SPEED, 4
 	
 	// Configure STEPCONFIG registers for all 8 channels
     MOV tmp0, STEP1
@@ -106,10 +105,6 @@ FILL_STEPS:
 	OR   tmp0, tmp0, 0x7
 	SBBO tmp0, adc_, CONTROL, 4
 	
-	MOV tmp0, 0xffffffff
-	SBBO tmp0, locals, 0, 4
-	JMP QUIT
-
 CAPTURE:
 	
 	MOV tmp0, 0x1fe	
