@@ -111,7 +111,7 @@ class Capture(_pru_adc.Capture):
 	
 	@encoder0_pin.setter
 	def encoder0_pin(self, value):
-		struct.pack_into('b', self._mem, 0x0040)
+		struct.pack_into('b', self._mem, 0x0040, value)
 	
 	@property
 	def encoder1_pin(self):
@@ -119,7 +119,7 @@ class Capture(_pru_adc.Capture):
 	
 	@encoder1_pin.setter
 	def encoder1_pin(self, value):
-		struct.pack_into('b', self._mem, 0x0041)
+		struct.pack_into('b', self._mem, 0x0041, value)
 	
 	@property
 	def encoder0_threshold(self):
