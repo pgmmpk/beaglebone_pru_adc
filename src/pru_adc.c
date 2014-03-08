@@ -79,6 +79,12 @@ static int Capture_init(Capture *self, PyObject *args, PyObject *kwds) {
 	self->locals.enc_local[1].threshold = 2000;
 	self->locals.enc_local[1].acc = INITIAL_ACC_VAL;
     
+	rc = prussdrv_pru_write_memory(0, 0, (unsigned int *) &self->locals, sizeof(self->locals));
+    if (rc < 0) {
+        PyErr_SetString(PyExc_IOError, "Failed to write local memory block");
+        return -1;
+    }
+    
     self->closed = 0;
     
     return 0;
@@ -94,12 +100,6 @@ static PyObject *Capture_start(Capture *self, PyObject *args, PyObject *kwds) {
     
     if (self->started) {
         PyErr_SetString(PyExc_IOError, "Already started");
-        return NULL;
-    }
-    
-	rc = prussdrv_pru_write_memory(0, 0, (unsigned int *) &self->locals, sizeof(self->locals));
-    if (rc < 0) {
-        PyErr_SetString(PyExc_IOError, "Failed to write local memory block");
         return NULL;
     }
     
@@ -127,15 +127,6 @@ static PyObject *Capture_wait(Capture *self) {
     Py_RETURN_NONE;
 }
 
-static PyObject *Capture_stop(Capture *self, PyObject *args, PyObject *kwds) {
-	// write exit flag
-	word flags = 1;
-	
-	prussdrv_pru_write_memory(0, offsetof(locals_t, flags), &flags, sizeof(flags));
-    
-    Py_RETURN_NONE;
-}
-
 static PyObject *Capture_close(Capture *self, PyObject *args, PyObject *kwds) {
 	if (!self->closed) {
 		self->closed = 1; // true
@@ -149,7 +140,6 @@ static PyObject *Capture_close(Capture *self, PyObject *args, PyObject *kwds) {
 
 static PyMethodDef Capture_methods[] = {
     {"start", (PyCFunction) Capture_start, METH_VARARGS, "Starts capturing ADC data"},
-    {"stop", (PyCFunction) Capture_stop, METH_NOARGS, "Stops capturing ADC data. Capture object can no longer be used"},
     {"wait", (PyCFunction) Capture_wait, METH_NOARGS, "Waits for PRU0 interrupt"},
     {"close", (PyCFunction) Capture_close, METH_NOARGS, "closes Capture object"},
     {NULL}  /* Sentinel */
