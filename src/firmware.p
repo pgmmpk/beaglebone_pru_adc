@@ -60,9 +60,9 @@
 .entrypoint START
 
 START:
-LBCO r0, C4, 4, 4					// Load Bytes Constant Offset (?)
-CLR  r0, r0, 4						// Clear bit 4 in reg 0
-SBCO r0, C4, 4, 4					// Store Bytes Constant Offset
+	LBCO r0, C4, 4, 4					// Load Bytes Constant Offset (?)
+	CLR  r0, r0, 4						// Clear bit 4 in reg 0
+	SBCO r0, C4, 4, 4					// Store Bytes Constant Offset
 
 	MOV adc_, ADC_BASE
 	MOV fifo0data, ADC_FIFO0DATA
@@ -92,13 +92,13 @@ MOV tmp0, STEP1
 	MOV tmp1, 0
 	MOV tmp2, 0
 FILL_STEPS:
-LSL tmp3, tmp1, 19
-SBBO tmp3, adc_, tmp0, 4
-ADD tmp0, tmp0, 4
-SBBO tmp2, adc_, tmp0, 4
-ADD tmp1, tmp1, 1
-ADD tmp0, tmp0, 4
-QBNE FILL_STEPS, tmp1, 8
+	LSL tmp3, tmp1, 19
+	SBBO tmp3, adc_, tmp0, 4
+	ADD tmp0, tmp0, 4
+	SBBO tmp2, adc_, tmp0, 4
+	ADD tmp1, tmp1, 1
+	ADD tmp0, tmp0, 4
+	QBNE FILL_STEPS, tmp1, 8
 
 	// Enable ADC with the desired mode (make STEPCONFIG registers writable, use tags, enable)
 	LBBO tmp0, adc_, CONTROL, 4
@@ -142,21 +142,21 @@ NO_SCOPE:
 	SBBO tmp0, locals, 0x7c, 4
 
 WAIT_FOR_FIFO0:
-LBBO tmp0, adc_, FIFO0COUNT, 4
-QBNE WAIT_FOR_FIFO0, tmp0, 8
+	LBBO tmp0, adc_, FIFO0COUNT, 4
+	QBNE WAIT_FOR_FIFO0, tmp0, 8
 
 READ_ALL_FIFO0:  // lets read all fifo content and dispatch depending on pin type
-LBBO value, fifo0data, 0, 4
-LSR  channel, value, 16
-AND channel, channel, 0xf
-MOV tmp1, 0xfff
-AND value, value, tmp1
+	LBBO value, fifo0data, 0, 4
+	LSR  channel, value, 16
+	AND channel, channel, 0xf
+	MOV tmp1, 0xfff
+	AND value, value, tmp1
 
-// here we have true captured value and channel
-QBNE NOT_ENC0, encoders.b0, channel
-MOV channel, 0
-CALL PROCESS
-JMP NEXT_CHANNEL
+	// here we have true captured value and channel
+	QBNE NOT_ENC0, encoders.b0, channel
+	MOV channel, 0
+	CALL PROCESS
+	JMP NEXT_CHANNEL
 NOT_ENC0:
 	QBNE NOT_ENC1, encoders.b1, channel
 	MOV channel, 1
@@ -173,14 +173,14 @@ NOT_ENC1:
 	SBBO tmp2, locals, tmp1, 4
 
 NEXT_CHANNEL:
-SUB tmp0, tmp0, 1
-QBNE READ_ALL_FIFO0, tmp0, 0
+	SUB tmp0, tmp0, 1
+	QBNE READ_ALL_FIFO0, tmp0, 0
 
 JMP CAPTURE
 
 QUIT:
-MOV R31.b0, PRU0_ARM_INTERRUPT+16   // Send notification to Host for program completion
-HALT
+	MOV R31.b0, PRU0_ARM_INTERRUPT+16   // Send notification to Host for program completion
+	HALT
 
 PROCESS:// lets process captured data. Type of processing depends on the pin type: average or wheel encoder
 	LSL channel, channel, 5
