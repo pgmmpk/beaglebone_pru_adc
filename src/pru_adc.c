@@ -97,7 +97,11 @@ static PyObject *Capture_start(Capture *self, PyObject *args, PyObject *kwds) {
         return NULL;
     }
     
-	prussdrv_pru_write_memory(0, 0, (unsigned int *) &self->locals, sizeof(self->locals));
+	rc = prussdrv_pru_write_memory(0, 0, (unsigned int *) &self->locals, sizeof(self->locals));
+    if (rc < 0) {
+        PyErr_SetString(PyExc_IOError, "Failed to write local memory block");
+        return NULL;
+    }
     
     rc = prussdrv_exec_program (0, filename);						// Load and execute the program
     if (rc != 0) {
