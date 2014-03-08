@@ -3,7 +3,7 @@ import time
 import mmap
 import struct
 
-numsamples = 100000
+numsamples = 64000
 
 capture = adc.Capture()
 
