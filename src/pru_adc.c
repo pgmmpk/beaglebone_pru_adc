@@ -52,18 +52,16 @@ static int Capture_init(Capture *self, PyObject *args, PyObject *kwds) {
         return -1;
     }
     
+    rc = prussdrv_pruintc_init(&pruss_intc_initdata);		// Get the interrupt initialized
+    if (rc != 0) {
+        PyErr_SetString(PyExc_IOError, "Failed to initialize interrupts");
+		prussdrv_exit();
+		return -1;
+    }
+	
     rc = prussdrv_pru_disable(0);
     if (rc != 0) {
         PyErr_SetString(PyExc_IOError, "Failed to disable PRU 0");
-		prussdrv_exit();
-        return -1;
-    }
-    
-    prussdrv_pruintc_init(&pruss_intc_initdata);		// Get the interrupt initialized
-	
-    rc = prussdrv_pru_enable(0);
-    if (rc != 0) {
-        PyErr_SetString(PyExc_IOError, "Failed to enable PRU 0");
 		prussdrv_exit();
         return -1;
     }
@@ -82,6 +80,14 @@ static int Capture_init(Capture *self, PyObject *args, PyObject *kwds) {
 	rc = prussdrv_pru_write_memory(0, 0, (unsigned int *) &self->locals, sizeof(self->locals));
     if (rc < 0) {
         PyErr_SetString(PyExc_IOError, "Failed to write local memory block");
+		prussdrv_exit();
+        return -1;
+    }
+
+    rc = prussdrv_pru_enable(0);
+    if (rc != 0) {
+        PyErr_SetString(PyExc_IOError, "Failed to enable PRU 0");
+		prussdrv_exit();
         return -1;
     }
     
