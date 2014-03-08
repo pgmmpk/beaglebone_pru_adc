@@ -30,7 +30,7 @@ def _ensure_pru_loaded():
     
 	with open(SLOTS, 'w') as f:
 		f.write('BB-BONE-PRU-01')
-	time.sleep(0.2)
+	time.sleep(0.2) # let things settle before using this driver
 
 def _ensure_adc_loaded():
 	if _is_adc_loaded():
@@ -38,7 +38,7 @@ def _ensure_adc_loaded():
     
 	with open(SLOTS, 'w') as f:
 		f.write('BB-ADC')
-	time.sleep(0.2)
+	time.sleep(0.2) # let things settle before using this driver
 
 _ensure_pru_loaded()
 _ensure_adc_loaded()
