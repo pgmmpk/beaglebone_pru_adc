@@ -1,6 +1,7 @@
 import _pru_adc
 import glob
 import re
+import os
 
 SLOTS = glob.glob('/sys/devices/bone_capemgr.*/slots')[0]
 
@@ -35,9 +36,11 @@ def _ensure_adc_loaded():
 		f.write('BB-ADC')
 
 _ensure_pru_loaded()
+_ensure_adc_loaded()
 
 class Capture(_pru_adc.Capture):
 
 	def start(self):
-		firmware = os.path.basename(__file__) + '/firmware/firmeware.bin'
+		firmware = os.path.dirname(__file__) + '/firmware/firmware.bin'
+		print firmware
 		_pru_adc.Capture.start(self, firmware)
