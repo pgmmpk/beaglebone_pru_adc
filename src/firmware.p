@@ -72,7 +72,7 @@ START:
 	MOV tmp1, 0xbeef1965				//
 	QBNE QUIT, tmp0, tmp1				// bail out if does not match
 
-	MOV out_buff, 0x80001000
+	LBBO out_buff, locals, 0x0c, 4
 	LBBO ema, locals, 0x1c, 4
 	LBBO encoders, locals, 0x40, 4
 	
