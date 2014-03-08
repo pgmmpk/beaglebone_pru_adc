@@ -64,9 +64,11 @@ static int Capture_init(Capture *self, PyObject *args, PyObject *kwds) {
 	self->locals.enc.encoder1 = 0xff; // ditto
 	
 	self->locals.enc_local[0].threshold = 2000;
+	self->locals.enc_local[0].speed = INITIAL_ACC_VAL;
 	self->locals.enc_local[0].acc = INITIAL_ACC_VAL;
 	
 	self->locals.enc_local[1].threshold = 2000;
+	self->locals.enc_local[1].speed = INITIAL_ACC_VAL;
 	self->locals.enc_local[1].acc = INITIAL_ACC_VAL;
 	
 	rc = prussdrv_pru_write_memory(0, 0, (unsigned int *) &self->locals, sizeof(self->locals));
