@@ -57,6 +57,7 @@ OFF_ENC1_VALUES = 0x0068
 OFF_SCOPE_ADDR  = 0x000c
 OFF_SCOPE_OFFSET= 0x0010
 OFF_SCOPE_SIZE  = 0x0014
+
 class Capture(_pru_adc.Capture):
     
 	def __init__(self):
@@ -165,17 +166,17 @@ class Capture(_pru_adc.Capture):
 	def _get_word(self, byte_offset):
 		return struct.unpack("L", self._mem[byte_offset:byte_offset+4])[0]
 	
-	def oscilloscope_capture_init(self, offset, numsamples):
+	def oscilloscope_init(self, offset, numsamples):
 		if numsamples * 4 > self._ddr_size:
 			raise ValueError("numsamples is too large. Limit is (determined by DDR memory size): " + str(self._ddr_size//4))
 		self._set_word(OFF_SCOPE_ADDR, self._ddr_addr)
 		self._set_word(OFF_SCOPE_OFFSET, offset)
 		self._set_word(OFF_SCOPE_SIZE, numsamples * 4)
     
-	def oscilloscope_capture_complete(self):
+	def oscilloscope_complete(self):
 		return self._get_word(0x14) == 0
 	
-	def oscilloscope_capture_data(self, numsamples):
+	def oscilloscope_data(self, numsamples):
 		out = []
 		with open("/dev/mem", 'r+b') as f1:
 			ddr_offset = 0
