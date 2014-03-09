@@ -173,8 +173,8 @@ class Capture(_pru_adc.Capture):
 		self._set_word(OFF_SCOPE_OFFSET, offset)
 		self._set_word(OFF_SCOPE_SIZE, numsamples * 4)
     
-	def oscilloscope_complete(self):
-		return self._get_word(0x14) == 0
+	def oscilloscope_is_complete(self):
+		return self._get_word(OFF_SCOPE_SIZE) == 0
 	
 	def oscilloscope_data(self, numsamples):
 		out = []
