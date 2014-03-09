@@ -64,12 +64,19 @@ Target system: arm-angstrom-linux-gnueabi
 
 3. Build and install python package
 	```bash
+	cd beaglebone_pru_adc
+
 	python setup.py install
+	```
+
+4. See it working
+	```bash
+	python examples/basic.py
 	```
 
 ## Basic usage
 
-[examples/basic.py]
+[examples/basic.py](https://github.com/pgmmpk/beaglebone_pru_adc/examples/basic.py)
 ```python
 import beaglebone_pru_adc as adc
 
@@ -87,7 +94,7 @@ capture.close()
 
 ## Using encoders
 
-[examples/encoders.py]
+[examples/encoders.py](https://github.com/pgmmpk/beaglebone_pru_adc/examples/encoders.py)
 ```python
 import beaglebone_pru_adc as adc
 
@@ -108,7 +115,7 @@ capture.close()
 
 ## Advanced: oscilloscope mode
 
-[examples/oscilloscope.py]
+[examples/oscilloscope.py](https://github.com/pgmmpk/beaglebone_pru_adc/examples/oscilloscope.py)
 ```python
 import beaglebone_pru_adc as adc
 import time
