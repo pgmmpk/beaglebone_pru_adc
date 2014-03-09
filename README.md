@@ -177,7 +177,7 @@ Releases all driver resources.
 Read-only property. Contains the number of ADC reads since the start of the driver.
 
 ### Capture.ema_pow
-Determines EMA smoothening factor. Smoothening is performed according to the formula:
+EMA smoothening factor. Smoothening is performed according to the formula:
 ```
 ema += (value - ema / 2^ema_pow)
 ```
@@ -188,10 +188,11 @@ Valid range: 0-31
 Default value is `ema_pow=0` which degenerates to no smoothening.
 
 ### Capture.values
-Read-only properties. Returns the tuple of 8 ADC pin values: AIN0-AIN7. 
+Read-only properties. Returns the tuple of 8 ADC pin values: (AIN0, AIN1, AIN2, AIN3, AIN4, AIN5, AIN6, AIN7). 
 
 If EMA smoothening
-was set, these values will represent the result of EMA filtering.
+was set, these values will represent the result of EMA filtering. Note that due to the way driver applies the EMA smoothening, the values will
+be scaled up. To bring them back into the 0-4095 range, divide them by `2^ema_pow` (or shift values right by `ema_pow` bits).
 
 If some pins were declared as encoder pins, the corresponding slots in the tuple will stay zero. Use `Capture.encoder0_values`
 and `Capture.encoder1_values` to read encoder pin values.
