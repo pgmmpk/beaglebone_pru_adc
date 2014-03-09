@@ -36,25 +36,25 @@ smoothing parameters and Schmitt filter threshold.
 Assume Angstrom distribution.
 
 Install pre-requisites:
-{% highlight bash %}
+```bash
 	opkg update && opkg install python-pip python-setuptools python-smbus
-{% endhighlight %}
+```
 
 Clone GIT repository
 
-{% highlight bash %}
+```bash
 	git config --global http.sslVerify false
 	
 	git clone https://github.com/pgmmpk/beaglebone_pru_adc.git
-{% endhighlight %}
+```
 
 Install
-{% highlight bash %}
+```bash
 	python setup.py install
-{% endhighlight %}
+```
 
 ## Basic usage
-{% highlight python %}
+```python
 	import beaglebone_pru_adc as adc
 	
 	capture = adc.Capture()
@@ -67,10 +67,10 @@ Install
 	capture.stop()
 	capture.wait()
 	capture.close()
-{% endhighlight %}
+```
 
 ## Using encoders
-{% highlight python %}
+```python
 	import beaglebone_pru_adc as adc
 	
 	capture = adc.Capture()
@@ -86,10 +86,10 @@ Install
 	capture.stop()
 	capture.wait()
 	capture.close()
-{% endhighlight %}
+```
 
 ## Advanced: oscilloscope mode
-{% highlight python %}
+```python
 	import beaglebone_pru_adc as adc
 	import time
 	
@@ -119,7 +119,7 @@ Install
 	print 'done'
 	
 	capture.close()
-{% endhighlight %}
+```
 
 
 ## Reference
