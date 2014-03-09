@@ -76,7 +76,7 @@ Target system: arm-angstrom-linux-gnueabi
 
 ## Basic usage
 
-[examples/basic.py](https://github.com/pgmmpk/beaglebone_pru_adc/examples/basic.py)
+[examples/basic.py](https://github.com/pgmmpk/beaglebone_pru_adc/tree/master/examples/basic.py)
 ```python
 import beaglebone_pru_adc as adc
 
@@ -94,7 +94,7 @@ capture.close()
 
 ## Using encoders
 
-[examples/encoders.py](https://github.com/pgmmpk/beaglebone_pru_adc/examples/encoders.py)
+[examples/encoders.py](https://github.com/pgmmpk/beaglebone_pru_adc/tree/master/examples/encoders.py)
 ```python
 import beaglebone_pru_adc as adc
 
@@ -115,7 +115,7 @@ capture.close()
 
 ## Advanced: oscilloscope mode
 
-[examples/oscilloscope.py](https://github.com/pgmmpk/beaglebone_pru_adc/examples/oscilloscope.py)
+[examples/oscilloscope.py](https://github.com/pgmmpk/beaglebone_pru_adc/tree/master/examples/oscilloscope.py)
 ```python
 import beaglebone_pru_adc as adc
 import time
