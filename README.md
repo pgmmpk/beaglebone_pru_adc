@@ -148,6 +148,50 @@ print 'done'
 capture.close()
 ```
 
+## Choosing encoder threshold
+Life is random and no two encoders are the same. Therefore, to get the best out of your wheel
+encoder you need to adjust the threshold. Here is a simple method for doing this:
+
+* Configure encoder pins
+* Set encoder threshold to a very high number (e.g. any number higher than 4095 will guarantee that encoder tick will never fire)
+* Start capture
+* Rotate each wheel few times while capturing
+* Examine encoder values. We are interested in min/max pair for each encoder. It will tell us what the actual signal range is for each
+wheel encoder
+* Choose threshold which is 5-10% lower than the range seen.
+
+Here is the code that does it (except for the wheel rotation which need to be done manually):
+```python
+import beaglebone_pru_adc as adc
+
+capture = adc.Capture()
+capture.encoder0_pin = 0 # AIN0
+capture.encoder1_pin = 2 # AIN2
+
+# set threshold such that encoders never fire any ticks
+capture.encoder0_threshold=4096
+capture.encoder1_threshold=4096
+
+capture.start()
+
+print 'Now you have 10 seconds to rotate each wheel...'
+time.sleep(10)
+
+capture.stop()
+capture.wait()
+
+min0, max0 = capture.encoder0_values[2:3]
+min1, max1 = capture.encoder1_values[2:3]
+
+capture.close()
+
+print 'Range for the Encoder0:', min0, '-', max0
+print 'Recommended threshold value for encoder 0 is:', int(0.9*(max0-min0))
+
+print 'Range for the Encoder0:', min0, '-', max0
+print 'Recommended threshold value for encoder 0 is:', int(0.9*(max0-min0))
+``` 
+
 ## Reference
 ADC input pins are named AIN0-AIN7 (there are 8 of them). They are located on P9 header and mapped to the header pins as follows:
 ```

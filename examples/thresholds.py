@@ -1,0 +1,28 @@
+import beaglebone_pru_adc as adc
+
+capture = adc.Capture()
+capture.encoder0_pin = 0 # AIN0
+capture.encoder1_pin = 2 # AIN2
+
+# set threshold such that encoders never fire any ticks
+capture.encoder0_threshold=4096
+capture.encoder1_threshold=4096
+
+capture.start()
+
+print 'Now you have 10 seconds to rotate each wheel...'
+time.sleep(10)
+
+capture.stop()
+capture.wait()
+
+min0, max0 = capture.encoder0_values[2:3]
+min1, max1 = capture.encoder1_values[2:3]
+
+capture.close()
+
+print 'Range for the Encoder0:', min0, '-', max0
+print 'Recommended threshold value for encoder 0 is:', int(0.9*(max0-min0))
+
+print 'Range for the Encoder0:', min0, '-', max0
+print 'Recommended threshold value for encoder 0 is:', int(0.9*(max0-min0))
