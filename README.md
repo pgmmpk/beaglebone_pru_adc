@@ -37,88 +37,88 @@ Assume Angstrom distribution.
 
 Install pre-requisites:
 ```bash
-	opkg update && opkg install python-pip python-setuptools python-smbus
+opkg update && opkg install python-pip python-setuptools python-smbus
 ```
 
 Clone GIT repository
 
 ```bash
-	git config --global http.sslVerify false
-	
-	git clone https://github.com/pgmmpk/beaglebone_pru_adc.git
+git config --global http.sslVerify false
+
+git clone https://github.com/pgmmpk/beaglebone_pru_adc.git
 ```
 
 Install
 ```bash
-	python setup.py install
+python setup.py install
 ```
 
 ## Basic usage
 ```python
-	import beaglebone_pru_adc as adc
-	
-	capture = adc.Capture()
-	
-	capture.start()
-	
-	for _ in range(1000):
-		print capture.timer, capture.values
-	
-	capture.stop()
-	capture.wait()
-	capture.close()
+import beaglebone_pru_adc as adc
+
+capture = adc.Capture()
+
+capture.start()
+
+for _ in range(1000):
+	print capture.timer, capture.values
+
+capture.stop()
+capture.wait()
+capture.close()
 ```
 
 ## Using encoders
 ```python
-	import beaglebone_pru_adc as adc
-	
-	capture = adc.Capture()
-	capture.encoder0_pin = 0 # AIN0, aka P8_39
-	capture.encoder1_pin = 2 # AIN2, aka P8_37
-	capture.encoder0_threshold = 3000 # you will want to adjust this
-	capture.encoder1_thredhold = 3000 # and this...	
-	capture.start()
-	
-	for _ in range(1000):
-		print capture.timer, capture.encoder0_values, capture.encoder1_values
-	
-	capture.stop()
-	capture.wait()
-	capture.close()
+import beaglebone_pru_adc as adc
+
+capture = adc.Capture()
+capture.encoder0_pin = 0 # AIN0, aka P8_39
+capture.encoder1_pin = 2 # AIN2, aka P8_37
+capture.encoder0_threshold = 3000 # you will want to adjust this
+capture.encoder1_thredhold = 3000 # and this...	
+capture.start()
+
+for _ in range(1000):
+	print capture.timer, capture.encoder0_values, capture.encoder1_values
+
+capture.stop()
+capture.wait()
+capture.close()
 ```
 
 ## Advanced: oscilloscope mode
 ```python
-	import beaglebone_pru_adc as adc
-	import time
-	
-	numsamples = 10000 # how many samples to capture
-	
-	capture = adc.Capture()
-	
-	capture.oscilloscope_capture_init(adc.OFF_VALUES, numsamples) # captures AIN0 - the first elt in AIN array
-	#capture.oscilloscope_capture_init(adc.OFF_VALUES+8, numsamples) # captures AIN2 - the third elt in AIN array
-	capture.start()
+import beaglebone_pru_adc as adc
+import time
 
-	for _ in range(10):
-		if capture.oscilloscope_capture.complete():
-			break
-		print '.'
-		time.sleep(0.1)
+numsamples = 10000 # how many samples to capture
 
-	capture.stop()
-	capture.wait()
-	
-	print 'Saving oscilloscope values to "data.csv"'
+capture = adc.Capture()
 
-	with open('data.csv', 'w') as f:
-		for x in capture.oscilloscope_data(numsamples):
-			f.write(str(x) + '\n')
+capture.oscilloscope_capture_init(adc.OFF_VALUES, numsamples) # captures AIN0 - the first elt in AIN array
+#capture.oscilloscope_capture_init(adc.OFF_VALUES+8, numsamples) # captures AIN2 - the third elt in AIN array
+capture.start()
 
-	print 'done'
-	
-	capture.close()
+for _ in range(10):
+	if capture.oscilloscope_capture.complete():
+		break
+	print '.'
+	time.sleep(0.1)
+
+capture.stop()
+capture.wait()
+
+print 'Saving oscilloscope values to "data.csv"'
+
+with open('data.csv', 'w') as f:
+	for x in capture.oscilloscope_data(numsamples):
+		f.write(str(x) + '\n')
+
+print 'done'
+
+capture.close()
 ```
 
 
