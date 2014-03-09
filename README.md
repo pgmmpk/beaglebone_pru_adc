@@ -163,6 +163,7 @@ wheel encoder
 Here is the code that does it (except for the wheel rotation which need to be done manually):
 ```python
 import beaglebone_pru_adc as adc
+import time
 
 capture = adc.Capture()
 capture.encoder0_pin = 0 # AIN0

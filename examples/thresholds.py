@@ -1,4 +1,5 @@
 import beaglebone_pru_adc as adc
+import time
 
 capture = adc.Capture()
 capture.encoder0_pin = 0 # AIN0
