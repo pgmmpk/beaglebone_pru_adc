@@ -4,7 +4,7 @@ Fast analog sensor capture for [Beaglebone Black](http://beaglebone.org).
 
 ## Introduction
 
-BeagleBoard Black has built-in ADC unit, that is technically called "Touchscreen/ADC subsystem" in documentation.
+Beaglebone Black processor has built-in ADC unit, that is technically called "Touchscreen/ADC subsystem" in documentation.
 It can be used to capture analog signals and digitize them. Unit supports up to 8 inputs. (Incidentally, there
 is just a single ADC chip and capture from 8 inputs happens sequentially by multiplexing pins. This means that
 capturing a single pin is faster than capturing several pins.)
@@ -48,25 +48,24 @@ Target system: arm-angstrom-linux-gnueabi
 ```
 
 1. Install pre-requisites:
-```bash
-opkg update && opkg install python-pip python-setuptools python-smbus
-```
+	```bash
+	opkg update && opkg install python-pip python-setuptools python-smbus
+	```
 
 2. Clone GIT repository
-
-```bash
-git clone https://github.com/pgmmpk/beaglebone_pru_adc.git
-```
-
-Note: if GIT refuses to clone, this might help (warning: disabling GIT SSL verification may pose a security risk)
-```bash
-git config --global http.sslVerify false
-```
+	```bash
+	git clone https://github.com/pgmmpk/beaglebone_pru_adc.git
+	```
+	
+	Note: if GIT refuses to clone, this might help (warning: disabling GIT SSL verification may pose a security risk)
+	```bash
+	git config --global http.sslVerify false
+	```
 
 3. Build and install python package
-```bash
-python setup.py install
-```
+	```bash
+	python setup.py install
+	```
 
 ## Basic usage
 ```python
@@ -89,8 +88,8 @@ capture.close()
 import beaglebone_pru_adc as adc
 
 capture = adc.Capture()
-capture.encoder0_pin = 0 # AIN0, aka P8_39
-capture.encoder1_pin = 2 # AIN2, aka P8_37
+capture.encoder0_pin = 0 # AIN0, aka P9_39
+capture.encoder1_pin = 2 # AIN2, aka P9_37
 capture.encoder0_threshold = 3000 # you will want to adjust this
 capture.encoder1_thredhold = 3000 # and this...	
 capture.start()
