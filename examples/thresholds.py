@@ -25,5 +25,5 @@ capture.close()
 print 'Range for the Encoder0:', min0, '-', max0
 print 'Recommended threshold value for encoder 0 is:', int(0.9*(max0-min0))
 
-print 'Range for the Encoder0:', min0, '-', max0
-print 'Recommended threshold value for encoder 0 is:', int(0.9*(max0-min0))
+print 'Range for the Encoder1:', min1, '-', max1
+print 'Recommended threshold value for encoder 1 is:', int(0.9*(max1-min1))
