@@ -17,8 +17,8 @@ time.sleep(10)
 capture.stop()
 capture.wait()
 
-min0, max0 = capture.encoder0_values[2:3]
-min1, max1 = capture.encoder1_values[2:3]
+_, min0, max0, _, _ = capture.encoder0_values
+_, min1, max1, _, _ = capture.encoder1_values
 
 capture.close()
 
