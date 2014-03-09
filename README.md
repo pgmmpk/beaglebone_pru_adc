@@ -68,6 +68,8 @@ Target system: arm-angstrom-linux-gnueabi
 	```
 
 ## Basic usage
+
+[examples/basic.py]
 ```python
 import beaglebone_pru_adc as adc
 
@@ -84,6 +86,8 @@ capture.close()
 ```
 
 ## Using encoders
+
+[examples/encoders.py]
 ```python
 import beaglebone_pru_adc as adc
 
@@ -103,6 +107,8 @@ capture.close()
 ```
 
 ## Advanced: oscilloscope mode
+
+[examples/oscilloscope.py]
 ```python
 import beaglebone_pru_adc as adc
 import time
