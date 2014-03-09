@@ -14,7 +14,7 @@ classifiers = ['Development Status :: 3 - Alpha',
                'Topic :: Home Automation',
                'Topic :: System :: Hardware']
 
-setup(name             = 'Beaglebone PRU ADC',
+setup(name             = 'beaglebone_pru_adc',
       version          = '0.0.1',
       author           = 'Mike Kroutikov',
       author_email     = 'pgmmpk@gmail.com',
@@ -26,6 +26,7 @@ setup(name             = 'Beaglebone PRU ADC',
       classifiers      = classifiers,
       packages         = find_packages(),
       py_modules       = ['beaglebone_pru_adc'],
+      package_data     = {'beaglebone_pru_adc': ['firmware/*.bin']},
       ext_modules      = [
           Extension('beaglebone_pru_adc._pru_adc', 
               ['src/pru_adc.c', 'prussdrv/prussdrv.c'],
