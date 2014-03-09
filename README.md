@@ -45,5 +45,78 @@ Assume Angstrom distribution.
 	python setup.py install
 	{% endhighlight %}
 
+## Basic usage
+	{% highlight python %}
+	import beaglebone_pru_adc as adc
+	
+	capture = adc.Capture()
+	
+	capture.start()
+	
+	for _ in range(1000):
+		print capture.timer, capture.values
+	
+	capture.stop()
+	capture.wait()
+	capture.close()
+	{% endhighlight %}
+
+## Using encoders
+	{% highlight python %}
+	import beaglebone_pru_adc as adc
+	
+	capture = adc.Capture()
+	capture.encoder0_pin = 0 # AIN0, aka P8_39
+	capture.encoder1_pin = 2 # AIN2, aka P8_37
+	capture.encoder0_threshold = 3000 # you will want to adjust this
+	capture.encoder1_thredhold = 3000 # and this...	
+	capture.start()
+	
+	for _ in range(1000):
+		print capture.timer, capture.encoder0_values, capture.encoder1_values
+	
+	capture.stop()
+	capture.wait()
+	capture.close()
+	{% endhighlight %}
+
+## Advanced: oscilloscope mode
+	{% highlight python %}
+	import beaglebone_pru_adc as adc
+	import time
+	
+	numsamples = 10000 # how many samples to capture
+	
+	capture = adc.Capture()
+	
+	capture.oscilloscope_capture_init(adc.OFF_VALUES, numsamples) # captures AIN0 - the first elt in AIN array
+	#capture.oscilloscope_capture_init(adc.OFF_VALUES+8, numsamples) # captures AIN2 - the third elt in AIN array
+	capture.start()
+
+	for _ in range(10):
+		if capture.oscilloscope_capture.complete():
+			break
+		print '.'
+		time.sleep(0.1)
+
+	capture.stop()
+	capture.wait()
+	
+	print 'Saving oscilloscope values to "data.csv"'
+
+	with open('data.csv', 'w') as f:
+		for x in capture.oscilloscope_data(numsamples):
+			f.write(str(x) + '\n')
+
+	print 'done'
+	
+	capture.close()
+	{% endhighlight %}
+
+
+## Reference
+TODO
+
+
 ## License
 MIT
