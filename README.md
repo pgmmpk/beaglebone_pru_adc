@@ -318,6 +318,7 @@ Returns an array of integers representing time evolution of the value of interes
 7. [PRU assembly reference](http://processors.wiki.ti.com/index.php/PRU_Assembly_Instructions).
 8. [PRU docs on TI wiki](http://processors.wiki.ti.com/index.php/Programmable_Realtime_Unit_Subsystem). Includes [list of Open Source PRU projects](http://processors.wiki.ti.com/index.php/PRU_Projects).
 9. [Derek Molloy's BeagleBone website](http://derekmolloy.ie/beaglebone/).
+10. [Ultrasound sensors with PRU](https://github.com/Teknoman117/beaglebot) by Teknoman.
 
 
 ## License
