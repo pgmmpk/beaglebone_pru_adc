@@ -301,7 +301,7 @@ Parameters:
 ### Capture.oscilloscope_is_complete()
 Returns `True` if capture was finished (i.e. the required number of samples was recorded and is ready for retrieval).
 
-### Capture.oscilloscope.data(numsamples)
+### Capture.oscilloscope_data(numsamples)
 Retrieves `numsamples` of data from driver DDR memory. Before calling this its a good idea to verify that oscilloscope indeed
 finished capturing all samples by calling `oscilloscope_is_complete()` (or you might read some garbage from not yet initialized memory).
 Of course, `numsamples` should be the same value as used in `oscilloscope._init()`.
