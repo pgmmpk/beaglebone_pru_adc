@@ -181,8 +181,8 @@ time.sleep(10)
 capture.stop()
 capture.wait()
 
-min0, max0 = capture.encoder0_values[2:3]
-min1, max1 = capture.encoder1_values[2:3]
+_, min0, max0, _, _ = capture.encoder0_values
+_, min1, max1, _, _ = capture.encoder1_values
 
 capture.close()
 
@@ -190,8 +190,8 @@ print 'Range for the Encoder0:', min0, '-', max0
 print 'Recommended threshold value for encoder 0 is:', int(0.9*(max0-min0))
 
 print 'Range for the Encoder1:', min1, '-', max1
-print 'Recommended threshold value for encoder 1 is:', int(0.9*(max1-min1))
-``` 
+print 'Recommended threshold value for encoder 1 is:', int(0.9*(max1-min1))``` 
+```
 
 ## Reference
 ADC input pins are named AIN0-AIN7 (there are 8 of them). They are located on P9 header and mapped to the header pins as follows:
@@ -288,7 +288,9 @@ Parameters:
 		use `OFF_ENC0_VALUES+4` to examine `max` variable of encoder0, etc.
 	* `OFF_ENC1_VALUES` - offset to the beginning of encoder1 values.
 	
-	For the complete list of local memory variables and their offset values see [src/firmware.h' and [src/READEM.md].
+	For the complete list of local memory variables and their offset values see
+	[src/firmware.h](https://github.com/pgmmpk/beaglebone_pru_adc/blob/master/src/firmware.h) and 
+	[src/README.md](https://github.com/pgmmpk/beaglebone_pru_adc/blob/master/src/README.md).
 
 * `numsamples` - number of samples to record. This is limited by the size of the DDR memory allocated to the `uio_pruss` device driver. It
 	is typically 0x40000, which allows recording of up to 64K oscilloscope values. This amounts to about 0.5 sec in time units.
@@ -302,6 +304,18 @@ finished capturing all samples by calling `oscilloscope_is_complete()` (or you m
 Of course, `numsamples` should be the same value as used in `oscilloscope._init()`.
 
 Returns an array of integers representing time evolution of the value of interest as determined by `offset` in `oscilloscope_init()` call.
+
+## Resources
+
+1. [AM335x Technical Reference Manual](http://www.phytec.com/wiki/images/7/72/AM335x_techincal_reference_manual.pdf). Older revision where PRU section is not deleted is [here](http://elinux.org/images/6/65/Spruh73c.pdf).
+2. [How to control ADC (see comments by Lenny and Abd)](http://beaglebone.cameon.net/home/reading-the-analog-inputs-adc)
+3. Hipstercircuits blog and [this](http://hipstercircuits.com/beaglebone-pru-ddr-memory-access-the-right-way) post in particular (how to communicate with DDR memory).
+4. Excellent [PyPRUSS](https://bitbucket.org/intelligentagent/pypruss) library.
+6. [prussdrv.c source](https://github.com/beagleboard/am335x_pru_package/blob/master/pru_sw/app_loader/interface/prussdrv.c) by Texas Instruments.
+7. [PRU assembly reference](http://processors.wiki.ti.com/index.php/PRU_Assembly_Instructions).
+8. [PRU docs on TI wiki](http://processors.wiki.ti.com/index.php/Programmable_Realtime_Unit_Subsystem). Includes [list of Open Source PRU projects](http://processors.wiki.ti.com/index.php/PRU_Projects).
+9. [Derek Molloy's BeagleBone website](http://derekmolloy.ie/beaglebone/).
+
 
 ## License
 MIT
