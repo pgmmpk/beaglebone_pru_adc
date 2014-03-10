@@ -161,6 +161,9 @@ wheel encoder
 * Choose threshold which is 5-10% lower than the range seen.
 
 Here is the code that does it (except for the wheel rotation which need to be done manually):
+
+[examples/thresholds.py](https://github.com/pgmmpk/beaglebone_pru_adc/tree/master/examples/thresholds.py)
+
 ```python
 import beaglebone_pru_adc as adc
 import time
