@@ -2,7 +2,7 @@
 
 #define PRU0_ARM_INTERRUPT 19
 
-#define ADC_BASE0x44e0d000
+#define ADC_BASE 0x44e0d000
 
 #define CONTROL 0x0040
 #define SPEED   0x004c
