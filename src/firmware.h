@@ -11,10 +11,13 @@ typedef struct {
 	word min;					// min value for current half-tick
 	word max;					// max value for current half-tick
 	word ticks;					// count of encoder ticks
-	word speed;					// width of last encoder tick in "timer" units, aka inversed speed
+	word speed;					// width of last encoder tick in "timer" units, aka inverse speed
 #define INITIAL_ACC_VAL (0x7fffffff)
-	word acc;					// work area for sped computation
-	word reserved;
+	word acc;					// work area for speed computation
+	word delay;					// activation delay, in timer units.
+	word uptick_time;			// work area for computing uptick delay
+	word downtick_time;			// work area for computing downtick delay
+	word reserved[6];
 } enc_local_t;
 
 /*

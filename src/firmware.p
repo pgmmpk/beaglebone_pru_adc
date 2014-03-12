@@ -1,29 +1,4 @@
-//
-// 
-// Data layout.
-// 
-// Local storage. Starts at offset 0 of the internal PRU memory bank. Initial values are set by the host
-// program. Contains the following blocks:
-// 
-// Offset   Length  Value Name   Description
-// ------   ------  ----- ----   -----------
-// 0x00004  0xbeef1965EYEEyecatcher constant 0xbeef1965
-// 0x00044  0x00000000TICKS  Number of capture ticks. Incremented each time ADC capture runs (200K times per sec, approx)
-// 0x00084  0x00000000FLAGS  Execution flags (bit mapped)
-// 0x000c4  0x00000000SCOPE_OUT  Address of the DDR memory buffer where to store OSCILLOSCOPE captured values
-// 0x00104  0x00000000SCHOPE_OFF Offset to use for OSCILLOSCOPE capture
-// 0x00144  0x00000000SCOPE_LEN  How many values to capture in OSCILLOSCOPE mode
-// 0x00184  0x00000000   Reserved
-// 0x001c3  0x000000 Reserved
-// 0x001f1  0x01  EMA_POWExponent to use for EMA-averaging: ema_value += (value - ema_value / 2^EMA_POW)
-// 0x00204  0x00000000AIN0_EMA   Value (optionally smoothened via EMA) of the channel AIN0
-// 0x00244  0x00000000AIN1_EMA   Value (optionally smoothened via EMA) of the channel AIN1
-// 0x00284  0x00000000AIN2_EMA   Value (optionally smoothened via EMA) of the channel AIN2
-// 0x002c4  0x00000000AIN3_EMA   Value (optionally smoothened via EMA) of the channel AIN3
-// 0x00304  0x00000000AIN4_EMA   Value (optionally smoothened via EMA) of the channel AIN4
-// 0x00344  0x00000000AIN5_EMA   Value (optionally smoothened via EMA) of the channel AIN5
-// 0x00384  0x00000000AIN6_EMA   Value (optionally smoothened via EMA) of the channel AIN6
-// 0x003c4  0x00000000AIN7_EMA   Value (optionally smoothened via EMA) of the channel AIN7
+// (C) 2014 Mike Kroutikov
 
 #define PRU0_ARM_INTERRUPT 19
 
@@ -137,9 +112,9 @@ NO_SCOPE:
 	ADD  tmp0, tmp0, 1
 	SBBO tmp0, locals, 0x5c, 4
 
-	LBBO tmp0, locals, 0x7c, 4
+	LBBO tmp0, locals, 0x9c, 4
 	ADD  tmp0, tmp0, 1
-	SBBO tmp0, locals, 0x7c, 4
+	SBBO tmp0, locals, 0x9c, 4
 
 WAIT_FOR_FIFO0:
 	LBBO tmp0, adc_, FIFO0COUNT, 4
@@ -183,7 +158,7 @@ QUIT:
 	HALT
 
 PROCESS:// lets process captured data. Type of processing depends on the pin type: average or wheel encoder
-	LSL channel, channel, 5
+	LSL channel, channel, 6
 	ADD channel, channel, 0x44
 	LBBO &tmp1, locals, channel, 16 // load tmp1-tmp4 (threshold, raw, min, max)
 	MOV tmp2, value
@@ -191,14 +166,44 @@ PROCESS:// lets process captured data. Type of processing depends on the pin typ
 	MAX tmp4, tmp4, value
 	SBBO &tmp1, locals, channel, 16 // store min/max etc
 	ADD tmp2, tmp3, tmp1// tmp2 = min + threshold
-	QBLT TOHIGH, value, tmp2
+	QBLT MAYBE_TOHIGH, value, tmp2
 	ADD tmp2, value, tmp1   // tmp2 = value + threshold
-	QBLT TOLOW, tmp4, tmp2
+	QBLT MAYBE_TOLOW, tmp4, tmp2
+	
+	// zero out delays
+	ADD channel, channel, 32
+	MOV tmp1, 0
+	MOV tmp2, 0
+	SBBO &tmp1, locals, channel, 8
 
 	RET
 
+MAYBE_TOHIGH:
+	ADD channel, channel, 28
+	LBBO &tmp1, locals, channel, 12 // load tmp1-tmp3 with (delay, up_count, down_count)
+	ADD tmp2, tmp2, 1
+	QBLT TOHIGH, tmp2, tmp1
+	MOV tmp3, 0
+	SBBO &tmp1, locals, channel, 12
+	
+	RET
+
+MAYBE_TOLOW:
+	ADD channel, channel, 28
+	LBBO &tmp1, locals, channel, 12 // load tmp1-tmp3 with (delay, up_count, down_count)
+	ADD tmp3, tmp3, 1
+	QBLT TOLOW, tmp3, tmp1
+	MOV tmp3, 0
+	SBBO &tmp1, locals, channel, 12
+	
+	RET
+
 TOLOW:
-	ADD channel, channel, 8
+	MOV tmp3, 0
+	MOV tmp2, 0
+	SBBO &tmp1, locals, channel, 12
+	
+	SUB channel, channel, 20
 	MOV tmp2, value
 	MOV tmp3, value
 	SBBO &tmp2, locals, channel, 8
@@ -212,7 +217,11 @@ TOLOW:
 	RET
 	
 TOHIGH:
-	ADD channel, channel, 8
+	MOV tmp3, 0
+	MOV tmp2, 0
+	SBBO &tmp1, locals, channel, 12
+
+	SUB channel, channel, 20
 	MOV tmp2, value
 	MOV tmp3, value
 	SBBO &tmp2, locals, channel, 8

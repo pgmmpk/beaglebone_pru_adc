@@ -23,16 +23,33 @@ Offset       Length  Value         Name       Description
 0x0040            4  0x00000000    ENC_CHNLS  Encoder channels
 0x0044            4  0x00000800    ENC_THRSH  Schmitt trigger threshold for encoder values
 0x0048            4  0x00000000    ENC0_RAW   Raw value last captured for ENC0
-0x004c            4  0x00000000    ECN0_MIN   Running min (see Scmitt trigger filtering algo)
-0x0050            4  0x00000000    ECN0_MAX   Running max (see Scmitt trigger filtering algo)
+0x004c            4  0x00000000    ENC0_MIN   Running min (see Scmitt trigger filtering algo)
+0x0050            4  0x00000000    ENC0_MAX   Running max (see Scmitt trigger filtering algo)
 0x0054            4  0x00000000    ENC0_TICK  Number of ticks for encoder 0
 0x0058            4  0x00000000    ENC0_SPD   Speed for the encoder 0
 0x005c            4  0x00000000    ENC0_ACC   Accumulator for computing encoder speed
-0x0060            4                           Reserved
-0x0064            4  0x00000800    ENC_THRSH  Schmitt trigger threshold for encoder values
-0x0068            4  0x00000000    ENC0_RAW   Raw value last captured for ENC1
-0x006c            4  0x00000000    ECN0_MIN   Running min (see Scmitt trigger filtering algo)
-0x0070            4  0x00000000    ECN0_MAX   Running max (see Scmitt trigger filtering algo)
-0x0074            4  0x00000000    ENC0_TICK  Number of ticks for encoder 1
-0x0078            4  0x00000000    ENC0_SPD   Speed for the encoder 1
-0x007c            4  0x00000000    ENC0_ACC   Accumulator for computing encoder speed
+0x0060            4  0x00000000    ENC0_DELAY Signal must exceed threshold for at least this value to be registered
+0x0064            4  0x00000000    ENC0_UP    Counts how many timer units signal is over the threshold
+0x0068            4  0x00000000    ENC0_DOWN  Counts how many timer units signal is below the threshold
+0x006c            4                           Reserved
+0x0070            4                           Reserved
+0x0074            4                           Reserved
+0x0078            4                           Reserved
+0x007c            4                           Reserved
+0x0080            4                           Reserved
+0x0084            4  0x00000800    ENC_THRSH  Schmitt trigger threshold for encoder values
+0x0088            4  0x00000000    ENC1_RAW   Raw value last captured for ENC1
+0x008c            4  0x00000000    ENC1_MIN   Running min (see Scmitt trigger filtering algo)
+0x0090            4  0x00000000    ENC1_MAX   Running max (see Scmitt trigger filtering algo)
+0x0094            4  0x00000000    ENC1_TICK  Number of ticks for encoder 1
+0x0098            4  0x00000000    ENC1_SPD   Speed for the encoder 1
+0x009c            4  0x00000000    ENC1_ACC   Accumulator for computing encoder speed
+0x00a0            4  0x00000000    ENC1_DELAY Signal must exceed threshold for at least this value to be registered
+0x00a4            4  0x00000000    ENC1_UP    Counts how many timer units signal is over the threshold
+0x00a8            4  0x00000000    ENC1_DOWN  Counts how many timer units signal is below the threshold
+0x00ac            4                           Reserved
+0x00b0            4                           Reserved
+0x00b4            4                           Reserved
+0x00b8            4                           Reserved
+0x00bc            4                           Reserved
+0x00d0            4                           Reserved
