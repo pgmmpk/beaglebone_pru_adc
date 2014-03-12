@@ -59,6 +59,7 @@ OFF_ENC1_DELAY  = 0x00a0
 OFF_SCOPE_ADDR  = 0x000c
 OFF_SCOPE_OFFSET= 0x0010
 OFF_SCOPE_SIZE  = 0x0014
+OFF_DEBUG       = 0x0018
 
 class Capture(_pru_adc.Capture):
     
@@ -177,6 +178,10 @@ class Capture(_pru_adc.Capture):
 	@encoder1_delay.setter
 	def encoder1_delay(self, value):
 		self._set_word(OFF_ENC1_DELAY, value)
+		
+	@property
+	def debug_value(self):
+		return self._get_word(OFF_DEBUG)
     
 	def _set_word(self, byte_offset, value):
 		struct.pack_into('L', self._mem, byte_offset, value)
