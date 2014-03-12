@@ -18,7 +18,7 @@
 #define adc_  r6
 #define fifo0data r7
 #define out_buff  r8
-#define localsr9
+#define locals r9
 
 #define value r10
 #define channel   r11
