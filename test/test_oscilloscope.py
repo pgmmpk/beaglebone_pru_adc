@@ -5,7 +5,7 @@ import struct
 
 capture = adc.Capture()
 
-capture.oscilloscope_capture_init(4, 10)
+capture.oscilloscope_init(4, 10)
 
 capture.start()
 
@@ -24,7 +24,7 @@ print 'encoder1_values:', capture.encoder1_values
 print 'encoder0_threshold:', capture.encoder0_threshold
 print 'encoder1_threshold:', capture.encoder1_threshold
 
-for x in capture.oscilloscope_capture_data(10):
+for x in capture.oscilloscope_data(10):
 	print x
 
 capture.close()
