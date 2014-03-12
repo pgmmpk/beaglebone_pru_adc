@@ -103,6 +103,8 @@ capture.encoder0_pin = 0 # AIN0, aka P9_39
 capture.encoder1_pin = 2 # AIN2, aka P9_37
 capture.encoder0_threshold = 3000 # you will want to adjust this
 capture.encoder1_thredhold = 3000 # and this...	
+capture.encoder0_delay = 100 # prevents "ringing", adjust if needed
+capture.encoder1_delay = 100 # ... same
 capture.start()
 
 for _ in range(1000):
@@ -195,6 +197,20 @@ print 'Recommended threshold value for encoder 0 is:', int(0.9*(max0-min0))
 print 'Range for the Encoder1:', min1, '-', max1
 print 'Recommended threshold value for encoder 1 is:', int(0.9*(max1-min1))``` 
 ```
+## Choosing encoder delay
+
+Encoders seem to be not very sensitive to this value. Try `100` that may work just fine for you.
+
+`delay` supresses noise and prevents it from registering a tick. When `delay` is zero, Schmitt software filtering works in a standard way:
+whenever signal exceeds `min+threshold` uptick is registered, and whenever signal becomes less than `max-threshold` a downtick is registered.
+
+With non-zero `delay` we require signal to overcome threshold for that many consequtive readings. Therefore, small random peaks are just ignored.
+
+If you make `delay` too low, you may suffer spurious ticks triggered by signal noise. If you make it too high, and your robot goes very fast,
+you risk genuine tick to be considered a "noise" and hence ignored. Typical period of a tick for fast-moving wheels is around 1000 time units
+(reminder: time unit is one ADC read operation). Therefore, `delay` values of up to 250 seem still reasonable.
+
+
 
 ## Reference
 ADC input pins are named AIN0-AIN7 (there are 8 of them). They are located on P9 header and mapped to the header pins as follows:
@@ -268,6 +284,11 @@ Default value is `0xff` (disabled).
 
 Threshold value for Schmitt filtering of encoder. Setting this value too high will have an effect of encoder never producing any ticks.
 Setting it too low opens possibility of spurious ticks triggered by random analog noise.
+
+### Capture.encoder0_delay, Capture.encoder1_delay
+
+Delay value to filter out noise. Default value is `0` (no filtering). Reasonable value is `100` which requires signal to stay high
+for 100 timer units before uptick is registered, and stay low for 100 timer units before downtick is registered.
 
 ### Capture.encoder0_values, Capture.encoder1_values
 Read-only property that returns a 5-tuple describing the state of the encoder. Values are: (raw, min, max, ticks, speed).
