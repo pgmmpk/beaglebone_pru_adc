@@ -162,6 +162,22 @@ class Capture(_pru_adc.Capture):
 	def encoder1_values(self):
 		return struct.unpack("LLLLL", self._mem[OFF_ENC1_VALUES:OFF_ENC1_VALUES+5*4])
     
+	@property
+	def encoder0_delay(self):
+		return self._get_word(OFF_ENC0_DELAY)
+	
+	@encoder0_delay.setter
+	def encoder0_delay(self, value):
+		self._set_word(OFF_ENC0_DELAY, value)
+    
+	@property
+	def encoder1_delay(self):
+		return self._get_word(OFF_ENC1_DELAY)
+    
+	@encoder1_delay.setter
+	def encoder1_delay(self, value):
+		self._set_word(OFF_ENC1_DELAY, value)
+    
 	def _set_word(self, byte_offset, value):
 		struct.pack_into('L', self._mem, byte_offset, value)
 	
