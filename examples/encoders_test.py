@@ -22,18 +22,20 @@ def init_capture(threshold0, threshold1, delay=0):
 
 with init_capture(2000, 2000, 200) as c:
 
-	enc0_ticks = c.encoder0_values[3]
-	enc1_ticks = c.encoder1_values[3]
+	enc0_ticks = c.encoder0_ticks
+	enc1_ticks = c.encoder1_ticks
+    enc0_speed = c.encoder0_speed
+    enc1_speed = c.encoder1_speed
 
 	while True:
-		v0 = c.encoder0_values
-		v1 = c.encoder1_values
+		v0 = c.encoder0_ticks
+		v1 = c.encoder1_ticks
 
-		if v0[3] != enc0_ticks or v1[3] != enc1_ticks:
-			enc0_ticks = v0[3]
-			enc1_ticks = v1[3]
-			enc0_speed = 10000. / v0[4]
-			enc1_speed = 10000. / v1[4]
+		if v0 != enc0_ticks or v1 != enc1_ticks:
+			enc0_ticks = v0
+			enc1_ticks = v1
+			enc0_speed = 10000. / c.encoder0_speed
+			enc1_speed = 10000. / c.encoder1_speed
 
 			print '%8d[%4.2lf] %8d[%4.2lf]' % (enc0_ticks, enc0_speed, enc1_ticks, enc1_speed)
 
