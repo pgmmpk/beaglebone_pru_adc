@@ -157,24 +157,24 @@ QUIT:
 	MOV R31.b0, PRU0_ARM_INTERRUPT+16   // Send notification to Host for program completion
 	HALT
 
-PROCESS:// lets process captured data. Type of processing depends on the pin type: average or wheel encoder
+PROCESS:                                // lets process wheel encoder value
 	LSL channel, channel, 6
 	ADD channel, channel, 0x44
-	LBBO &tmp1, locals, channel, 16 // load tmp1-tmp4 (threshold, raw, min, max)
+	LBBO &tmp1, locals, channel, 16     // load tmp1-tmp4 (threshold, raw, min, max)
 	MOV tmp2, value
 	MIN tmp3, tmp3, value
 	MAX tmp4, tmp4, value
-	SBBO &tmp1, locals, channel, 16 // store min/max etc
-	ADD tmp2, tmp3, tmp1// tmp2 = min + threshold
+	SBBO &tmp1, locals, channel, 16     // store min/max etc
+	ADD tmp2, tmp3, tmp1                // tmp2 = min + threshold
 	QBLT MAYBE_TOHIGH, value, tmp2
-	ADD tmp2, value, tmp1   // tmp2 = value + threshold
+	ADD tmp2, value, tmp1               // tmp2 = value + threshold
 	QBLT MAYBE_TOLOW, tmp4, tmp2
 	
 	// zero out delays
-	ADD channel, channel, 32
-	MOV tmp1, 0
-	MOV tmp2, 0
-	SBBO &tmp1, locals, channel, 8
+	//ADD channel, channel, 32
+	//MOV tmp1, 0
+	//MOV tmp2, 0
+	//SBBO &tmp1, locals, channel, 8
 
 	RET
 
