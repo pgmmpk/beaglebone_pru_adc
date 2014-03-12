@@ -24,8 +24,6 @@ with init_capture(2000, 2000, 200) as c:
 
 	enc0_ticks = c.encoder0_ticks
 	enc1_ticks = c.encoder1_ticks
-    enc0_speed = c.encoder0_speed
-    enc1_speed = c.encoder1_speed
 
 	while True:
 		v0 = c.encoder0_ticks
