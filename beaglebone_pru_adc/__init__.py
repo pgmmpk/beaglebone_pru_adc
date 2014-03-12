@@ -54,6 +54,10 @@ OFF_ENC0_THRESH = 0x0044
 OFF_ENC1_THRESH = 0x0084
 OFF_ENC0_VALUES = 0x0048
 OFF_ENC1_VALUES = 0x0088
+OFF_ENC0_TICKS  = 0x0054
+OFF_ENC1_TICKS  = 0x0094
+OFF_ENC0_SPEED  = 0x0058
+OFF_ENC1_SPEED  = 0x0098
 OFF_ENC0_DELAY  = 0x0060
 OFF_ENC1_DELAY  = 0x00a0
 OFF_SCOPE_ADDR  = 0x000c
@@ -178,7 +182,23 @@ class Capture(_pru_adc.Capture):
 	@encoder1_delay.setter
 	def encoder1_delay(self, value):
 		self._set_word(OFF_ENC1_DELAY, value)
-		
+	
+	@property
+	def encoder0_ticks(self):
+		return self._get_word(OFF_ENC0_TICKS)
+
+	@property
+	def encoder1_ticks(self):
+		return self._get_word(OFF_ENC1_TICKS)
+	
+	@property
+	def encoder0_speed(self):
+		return self._get_word(OFF_ENC0_SPEED)
+	
+	@property
+	def encoder1_speed(self):
+		return self._get_word(OFF_ENC1_SPEED)
+
 	@property
 	def debug_value(self):
 		return self._get_word(OFF_DEBUG)

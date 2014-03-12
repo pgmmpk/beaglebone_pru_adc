@@ -297,7 +297,26 @@ Read-only property that returns a 5-tuple describing the state of the encoder. V
 * `min` is the minimum value seen during the current tick window (for internal use and debugging)
 * `max` is the maximum value seen during the current tick window (for internal use and debugging)
 * `ticks` is the number of encoder ticks seen since the start of the driver. Ticks are counted on the falling edge of the signal.
+   This value can also be retrieved with a helper property `encoder0_ticks`, `encoder1_ticks`. 
 * `speed` is the width of the last encoder tick in `timer` units. Its inverse provides a measure of speed.
+	This value can also be retrieved with `encoder0_speed`, `encoder1_speed`
+
+### Capture.encoder0_ticks, Capture.encoder1_ticks
+Read-only property that returns number of ticks registered for the corresponding encoder.
+Same value is returned as 4-th element of tuple retrieved by `encoder0_values`, `encoder1_values`. 
+
+
+### Capture.encoder0_speed, Capture.encoder1_speed
+Read-only property that returns inverse speed of the last registered tick.
+Same value is returned as 5-th element of tuple retrieved by `encoder0_values`, `encoder1_values`.
+
+Note that name is a misnomer. Bigger values mean smaller speed. Actual speed of rotation for 16-teeth encoder can be
+computed as 
+```
+radians_per_sec = (PI / 8) * 122000 / encoder_speed
+``` 
+Here PI/8 is the 1/16 of a circle - how many radians one tick represents, 122000 is (approximate) capture speed,
+and encoder_speed is teh value returned by the driver (which is the width in timer units of the tick).
 
 ### Capture.oscilloscope_init(offset, numsamples)
 Sets up driver for "oscilloscope" mode. In this mode on every ADC capture a value from driver local memory will be written
