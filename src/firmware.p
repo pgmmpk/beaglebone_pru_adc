@@ -169,12 +169,12 @@ PROCESS:                                // lets process wheel encoder value
 	QBLT MAYBE_TOHIGH, value, tmp2
 	ADD tmp2, value, tmp1               // tmp2 = value + threshold
 	QBLT MAYBE_TOLOW, tmp4, tmp2
-	
+
 	// zero out delays
-	//ADD channel, channel, 32
-	//MOV tmp1, 0
-	//MOV tmp2, 0
-	//SBBO &tmp1, locals, channel, 8
+	ADD channel, channel, 32
+	MOV tmp1, 0
+	MOV tmp2, 0
+	SBBO &tmp1, locals, channel, 8
 
 	RET
 
@@ -182,9 +182,9 @@ MAYBE_TOHIGH:
 	ADD channel, channel, 28
 	LBBO &tmp1, locals, channel, 12 // load tmp1-tmp3 with (delay, up_count, down_count)
 	ADD tmp2, tmp2, 1
-	QBLT TOHIGH, tmp2, tmp1
 	MOV tmp3, 0
 	SBBO &tmp1, locals, channel, 12
+	QBLT TOHIGH, tmp2, tmp1
 	
 	RET
 
@@ -192,9 +192,9 @@ MAYBE_TOLOW:
 	ADD channel, channel, 28
 	LBBO &tmp1, locals, channel, 12 // load tmp1-tmp3 with (delay, up_count, down_count)
 	ADD tmp3, tmp3, 1
-	QBLT TOLOW, tmp3, tmp1
-	MOV tmp3, 0
+	MOV tmp2, 0
 	SBBO &tmp1, locals, channel, 12
+	QBLT TOLOW, tmp3, tmp1
 	
 	RET
 
