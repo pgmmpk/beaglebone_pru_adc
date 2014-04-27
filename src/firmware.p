@@ -66,6 +66,7 @@ START:
 MOV tmp0, STEP1
 	MOV tmp1, 0
 	MOV tmp2, 0
+
 FILL_STEPS:
 	LSL tmp3, tmp1, 19
 	SBBO tmp3, adc_, tmp0, 4
@@ -132,13 +133,14 @@ READ_ALL_FIFO0:  // lets read all fifo content and dispatch depending on pin typ
 	MOV channel, 0
 	CALL PROCESS
 	JMP NEXT_CHANNEL
+
 NOT_ENC0:
 	QBNE NOT_ENC1, encoders.b1, channel
 	MOV channel, 1
 	CALL PROCESS
 	JMP NEXT_CHANNEL
-NOT_ENC1:
 
+NOT_ENC1:
 	LSL tmp1, channel, 2   // to byte offset
 	ADD tmp1, tmp1, 0x20   // base of the EMA values
 	LBBO tmp2, locals, tmp1, 4
@@ -181,8 +183,8 @@ PROCESS:                                // lets process wheel encoder value
 MAYBE_TOHIGH:
 	ADD channel, channel, 28
 	LBBO &tmp1, locals, channel, 12 // load tmp1-tmp3 with (delay, up_count, down_count)
-	ADD tmp2, tmp2, 1
-	MOV tmp3, 0
+	ADD tmp2, tmp2, 1               // up_count++
+	MOV tmp3, 0                     // down_count=0
 	SBBO &tmp1, locals, channel, 12
 	QBLT TOHIGH, tmp2, tmp1
 	
@@ -191,8 +193,8 @@ MAYBE_TOHIGH:
 MAYBE_TOLOW:
 	ADD channel, channel, 28
 	LBBO &tmp1, locals, channel, 12 // load tmp1-tmp3 with (delay, up_count, down_count)
-	ADD tmp3, tmp3, 1
-	MOV tmp2, 0
+	ADD tmp3, tmp3, 1               // down_count++
+	MOV tmp2, 0                     // up_count=0
 	SBBO &tmp1, locals, channel, 12
 	QBLT TOLOW, tmp3, tmp1
 	
@@ -201,28 +203,28 @@ MAYBE_TOLOW:
 TOLOW:
 	MOV tmp3, 0
 	MOV tmp2, 0
-	SBBO &tmp1, locals, channel, 12
+	SBBO &tmp1, locals, channel, 12  // up_count = down_count = 0
 	
 	SUB channel, channel, 20
-	MOV tmp2, value
+	MOV tmp2, value                  // min = max = value
 	MOV tmp3, value
 	SBBO &tmp2, locals, channel, 8
 	
 	ADD channel, channel, 8
-	LBBO &tmp2, locals, channel, 12
-	ADD tmp2, tmp2, 1
-	MOV tmp3, tmp4
-	MOV tmp4, 0
+	LBBO &tmp2, locals, channel, 12  // ticks, speed, acc
+	ADD tmp2, tmp2, 1                // ticks++
+	MOV tmp3, tmp4                   // speed = acc
+	MOV tmp4, 0                      // acc = 0
 	SBBO &tmp2, locals, channel, 12
 	RET
 	
 TOHIGH:
 	MOV tmp3, 0
 	MOV tmp2, 0
-	SBBO &tmp1, locals, channel, 12
+	SBBO &tmp1, locals, channel, 12  // up_count=0, down_count=0
 
 	SUB channel, channel, 20
-	MOV tmp2, value
+	MOV tmp2, value                  // min = max = value
 	MOV tmp3, value
 	SBBO &tmp2, locals, channel, 8
 	RET

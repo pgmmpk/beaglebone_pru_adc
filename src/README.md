@@ -2,6 +2,7 @@
 
 This is the structure of local PRU0 memory. There are 512 bytes available (128 fullwords)
 
+```
 Offset       Length  Value         Name       Description
 ------       ------  -----         ----       -----------
 0x0000            4  0xbeef1965    EYE        Eyecatcher constant 0xbeef1965
@@ -53,3 +54,4 @@ Offset       Length  Value         Name       Description
 0x00b8            4                           Reserved
 0x00bc            4                           Reserved
 0x00d0            4                           Reserved
+```
