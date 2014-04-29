@@ -109,16 +109,15 @@ NO_SCOPE:
 	SBBO tmp0, locals, 0x04, 4
 	
 	// increment encoder ticks
-	LBBO tmp0, locals, 0x5c, 8
-	ADD  tmp0, tmp0, 1
-	MAX  tmp1, tmp1, tmp0
-	SBBO tmp0, locals, 0x5c, 8
+	LBBO tmp0, locals, 0x58, 8
+	ADD  tmp1, tmp1, 1
+	MAX  tmp0, tmp1, tmp0
+	SBBO tmp0, locals, 0x58, 8
 
-	LBBO tmp0, locals, 0x9c, 8
-	ADD  tmp0, tmp0, 1
-	ADD  tmp0, tmp0, 1
-	MAX  tmp1, tmp1, tmp0
-	SBBO tmp0, locals, 0x9c, 8
+	LBBO tmp0, locals, 0x98, 8
+	ADD  tmp1, tmp1, 1
+	MAX  tmp0, tmp1, tmp0
+	SBBO tmp0, locals, 0x98, 8
 
 WAIT_FOR_FIFO0:
 	LBBO tmp0, adc_, FIFO0COUNT, 4
