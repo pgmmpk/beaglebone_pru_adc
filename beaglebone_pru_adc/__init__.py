@@ -64,6 +64,8 @@ OFF_SCOPE_ADDR  = 0x000c
 OFF_SCOPE_OFFSET= 0x0010
 OFF_SCOPE_SIZE  = 0x0014
 OFF_DEBUG       = 0x0018
+OFF_CAP_DELAY   = 0x00c4
+
 
 class Capture(_pru_adc.Capture):
     
@@ -202,6 +204,14 @@ class Capture(_pru_adc.Capture):
 	@property
 	def debug_value(self):
 		return self._get_word(OFF_DEBUG)
+
+	@property
+	def cap_delay(self):
+		return self._get_word(OFF_CAP_DELAY)
+
+	@cap_delay.setter
+	def cap_delay(self, value):
+		self._set_word(OFF_CAP_DELAY, value)
     
 	def _set_word(self, byte_offset, value):
 		struct.pack_into('L', self._mem, byte_offset, value)

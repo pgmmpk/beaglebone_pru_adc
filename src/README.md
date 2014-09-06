@@ -54,4 +54,5 @@ Offset       Length  Value         Name       Description
 0x00b8            4                           Reserved
 0x00bc            4                           Reserved
 0x00d0            4                           Reserved
+0x00d4            4  0x00000000    CAP_DELAY  Extra delay to control capture frequency
 ```

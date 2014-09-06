@@ -48,6 +48,7 @@ typedef struct {
 	} enc;
 	
 	enc_local_t enc_local[2];	// local work memory for each wheel encoder
+	word cap_delay;				// extra delay to control capture frequency
 	
 } locals_t;
 

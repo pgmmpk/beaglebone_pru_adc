@@ -24,6 +24,7 @@
 #define channel   r11
 #define ema   r12
 #define encoders  r13
+#define cap_delay r14
 
 #define tmp0  r1
 #define tmp1  r2
@@ -50,6 +51,9 @@ START:
 	LBBO out_buff, locals, 0x0c, 4
 	LBBO ema, locals, 0x1c, 4
 	LBBO encoders, locals, 0x40, 4
+
+	// Read CAP_DELAY value into the register for convenience
+	LBBO cap_delay, locals, 0xc4, 4
 	
 	// Disable ADC
 	LBBO tmp0, adc_, CONTROL, 4
@@ -61,7 +65,7 @@ START:
 	// Put ADC capture to its full speed
 	MOV tmp0, 0
 	SBBO tmp0, adc_, SPEED, 4
-	
+
 	// Configure STEPCONFIG registers for all 8 channels
 MOV tmp0, STEP1
 	MOV tmp1, 0
@@ -82,6 +86,9 @@ FILL_STEPS:
 	SBBO tmp0, adc_, CONTROL, 4
 	
 CAPTURE:
+	// check if we need to delay our main loop (to control capture frequency)
+	QBNE CAPTURE_DELAY, cap_delay, 0
+NO_DELAY:
 	
 	MOV tmp0, 0x1fe	
 	SBBO tmp0, adc_, STEPCONFIG, 4   // write STEPCONFIG register (this triggers capture)
@@ -89,6 +96,7 @@ CAPTURE:
 	// check for exit flag
 	LBBO tmp0, locals, 0x08, 4   // read runtime flags
 	QBNE QUIT, tmp0.b0, 0
+
 	
 	// check for oscilloscope mode
 	LBBO tmp0, locals, 0x14, 4
@@ -117,6 +125,7 @@ NO_SCOPE:
 	LBBO tmp0, locals, 0x98, 8
 	ADD  tmp1, tmp1, 1
 	MAX  tmp0, tmp1, tmp0
+	SBBO tmp0, locals, 0x98, 8
 	SBBO tmp0, locals, 0x98, 8
 
 WAIT_FOR_FIFO0:
@@ -160,6 +169,13 @@ JMP CAPTURE
 QUIT:
 	MOV R31.b0, PRU0_ARM_INTERRUPT+16   // Send notification to Host for program completion
 	HALT
+
+CAPTURE_DELAY:
+	MOV tmp0, cap_delay
+DELAY_LOOP:
+	SUB tmp0, tmp0, 1
+	QBNE DELAY_LOOP, tmp0, 0
+	JMP NO_DELAY
 
 PROCESS:                                // lets process wheel encoder value
 	LSL channel, channel, 6
@@ -230,3 +246,4 @@ TOHIGH:
 	MOV tmp3, value
 	SBBO &tmp2, locals, channel, 8
 	RET
+
