@@ -31,6 +31,8 @@ is a measure of wheel speed).
 and store the result in memory for subsequent analysis. This is useful for researching analog input shape and tuning
 smoothing parameters and Schmitt filter threshold.
 
+4. User can configure `cap_delay` parameter to run at lower capture speed than the maximum. Capture delay introduces some delay at every capture cycle resulting in speed slowdown. This allows one to configure ADC capture frequency.
+
 ## Installation
 
 Assume Angstrom distribution with kernel 3.8.13:
@@ -91,6 +93,22 @@ capture.stop()
 capture.wait()
 capture.close()
 ```
+
+## Slowing down capture speed
+[examples/speed_control.py](https://github.com/pgmmpk/beaglebone_pru_adc/tree/master/examples/speed_control.py)
+```python
+import beaglebone_pru_adc as adc
+
+capture = adc.Capture()
+
+# the bigger the delay the slower capture is
+capture.cap_delay = 2000
+...
+
+capture.start()
+...
+```
+
 
 ## Using encoders
 
@@ -317,6 +335,9 @@ radians_per_sec = (PI / 8) * 122000 / encoder_speed
 ``` 
 Here PI/8 is the 1/16 of a circle - how many radians one tick represents, 122000 is (approximate) capture speed,
 and encoder_speed is teh value returned by the driver (which is the width in timer units of the tick).
+
+### Capture.cap_delay
+Extra delay to be introduced in the main capture loop for the purpose of slowing down the capture speed. Default value is 0, which means "no delay". Play with the code in `examples/speed_control.py` to choose the correct delay value for the desired speed. Try values of 100, 1000, 10000 to see the difference.
 
 ### Capture.oscilloscope_init(offset, numsamples)
 Sets up driver for "oscilloscope" mode. In this mode on every ADC capture a value from driver local memory will be written
