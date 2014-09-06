@@ -15,7 +15,7 @@ classifiers = ['Development Status :: 3 - Alpha',
                'Topic :: System :: Hardware']
 
 setup(name             = 'beaglebone_pru_adc',
-      version          = '0.0.2',
+      version          = '0.0.3',
       author           = 'Mike Kroutikov',
       author_email     = 'pgmmpk@gmail.com',
       description      = 'Fast analog sensor capture for Beaglebone Black',
