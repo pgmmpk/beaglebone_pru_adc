@@ -5,8 +5,11 @@ import os
 import mmap
 import struct
 import time
+import array
+
 
 SLOTS = glob.glob('/sys/devices/bone_capemgr.*/slots')[0]
+
 
 def _is_pru_loaded():
 	with open(SLOTS, 'r') as f:
@@ -230,7 +233,7 @@ class Capture(_pru_adc.Capture):
 		return self._get_word(OFF_SCOPE_SIZE) == 0
 	
 	def oscilloscope_data(self, numsamples):
-		out = []
+		out = array.array('L')
 		with open("/dev/mem", 'r+b') as f1:
 			ddr_offset = 0
 			ddr_addr = self._ddr_addr
@@ -238,7 +241,6 @@ class Capture(_pru_adc.Capture):
 				ddr_offset = 0x70000000
 				ddr_addr -= ddr_offset
 			ddr = mmap.mmap(f1.fileno(), self._ddr_size + ddr_offset, offset=ddr_addr)
-			for i in range(numsamples):
-				out.append(struct.unpack("L", ddr[ddr_offset+i*4:ddr_offset+i*4+4])[0])
+			out.fromstring(ddr[ddr_offset:ddr_offset + 4*numsamples])
 			ddr.close()
 		return out
