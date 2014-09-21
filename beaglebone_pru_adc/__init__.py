@@ -241,6 +241,6 @@ class Capture(_pru_adc.Capture):
 				ddr_offset = 0x70000000
 				ddr_addr -= ddr_offset
 			ddr = mmap.mmap(f1.fileno(), self._ddr_size + ddr_offset, offset=ddr_addr)
-			out.fromstring(ddr[ddr_offset:ddr_offset + 4*numsamples], numsamples)
+			out.fromstring(ddr[ddr_offset:ddr_offset + 4*numsamples])
 			ddr.close()
 		return out
