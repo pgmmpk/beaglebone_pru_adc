@@ -59,11 +59,6 @@ Target system: arm-angstrom-linux-gnueabi
 	git clone https://github.com/pgmmpk/beaglebone_pru_adc.git
 	```
 	
-	Note: if GIT refuses to clone, this might help (warning: disabling GIT SSL verification may pose a security risk)
-	```bash
-	git config --global http.sslVerify false
-	```
-
 3. Build and install python package
 	```bash
 	cd beaglebone_pru_adc
