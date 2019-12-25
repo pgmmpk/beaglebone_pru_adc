@@ -2,6 +2,9 @@
 
 Fast analog sensor capture for [Beaglebone Black](http://beaglebone.org).
 
+Please note that this repo is for old Angstrom OS. You may want to check
+https://github.com/pgmmpk/bbb_pru_adc for Debian 10 version.
+
 ## Introduction
 
 Beaglebone Black processor has built-in ADC unit, that is technically called "Touchscreen/ADC subsystem" in documentation.
